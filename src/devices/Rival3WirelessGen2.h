@@ -5,6 +5,8 @@
 
 #include <QTimer>
 
+class IdleMonitor;
+
 /// SteelSeries Rival 3 Wireless Gen 2 mouse via its 2.4 GHz receiver.
 class Rival3WirelessGen2 : public Device
 {
@@ -48,6 +50,8 @@ private:
     MouseConfig m_mouseConfig;
     MouseConfig m_lastSent;
     bool m_hasSent = false;
+    bool m_resendOnWake = false;
+    IdleMonitor *m_idle;
     QTimer m_batteryPoll;
     QTimer m_saveTimer;
     int m_failedQueries = 0;

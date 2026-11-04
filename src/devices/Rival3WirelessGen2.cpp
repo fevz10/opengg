@@ -1,21 +1,34 @@
 #include "devices/Rival3WirelessGen2.h"
 
+#include "core/IdleMonitor.h"
 #include "devices/Protocol.h"
 
 using namespace Protocol::Rival3WirelessGen2;
 
 namespace {
-constexpr int kBatteryPollConnectedMs = 30000;
-constexpr int kBatteryPollAsleepMs = 8000;
+// Every query is a vendor command the mouse firmware has to service, so keep
+// the traffic low: nothing we send should make the cursor hitch.
+constexpr int kBatteryPollConnectedMs = 60000;
+constexpr int kBatteryPollAsleepMs = 20000;
+// While the user is away we stay completely silent so the mouse can sleep and
+// is not kept awake by our queries.
+constexpr qint64 kUserIdleThresholdMs = 2 * 60 * 1000;
 } // namespace
 
 Rival3WirelessGen2::Rival3WirelessGen2(const HidDeviceInfo &info, HidTransport *transport, QObject *parent)
     : Device(info, transport, parent)
+    , m_idle(new IdleMonitor(this))
 {
     m_commandDelayMs = CommandDelayMs;
 
     m_batteryPoll.setInterval(kBatteryPollConnectedMs);
     connect(&m_batteryPoll, &QTimer::timeout, this, &Rival3WirelessGen2::requestBattery);
+
+    m_idle->setThresholdMs(kUserIdleThresholdMs);
+    connect(m_idle, &IdleMonitor::idleChanged, this, [this](bool idle) {
+        if (!idle && m_opened)
+            QTimer::singleShot(2000, this, &Rival3WirelessGen2::requestBattery);
+    });
 
     m_saveTimer.setSingleShot(true);
     m_saveTimer.setInterval(700);
@@ -61,8 +74,13 @@ void Rival3WirelessGen2::sendDiff(const MouseConfig &previous, const MouseConfig
     }
     m_lastSent = next;
     m_hasSent = true;
-    if (changed)
+    if (changed) {
+        // If the mouse is asleep the receiver may not deliver this; repeat it
+        // once the mouse answers again.
+        if (status() == Status::Asleep)
+            m_resendOnWake = true;
         scheduleSave();
+    }
 }
 
 void Rival3WirelessGen2::scheduleSave()
@@ -87,8 +105,12 @@ void Rival3WirelessGen2::resendAll()
 
 void Rival3WirelessGen2::requestBattery()
 {
-    if (m_opened)
-        query(queryBattery(), TagBattery, 64, 250);
+    if (!m_opened)
+        return;
+    // Nobody is using the computer: let the mouse sleep undisturbed.
+    if (m_idle->isSupported() && m_idle->isIdle())
+        return;
+    query(queryBattery(), TagBattery, 64, 250);
 }
 
 void Rival3WirelessGen2::onOpened()
@@ -97,6 +119,7 @@ void Rival3WirelessGen2::onOpened()
     m_failedQueries = 0;
     m_hasSent = false;
     sendDiff(m_mouseConfig, m_mouseConfig, true);
+    m_idle->setEnabled(true);
     requestBattery();
     m_batteryPoll.start();
 }
@@ -112,9 +135,11 @@ void Rival3WirelessGen2::onResponse(int tag, const QByteArray &data)
         setBattery(b.level, b.charging);
         setStatus(Status::Connected);
         m_batteryPoll.setInterval(kBatteryPollConnectedMs);
-        if (wasAsleep) {
-            // The mouse was off while we talked to the receiver: make sure it
-            // really has the current settings.
+        if (wasAsleep && m_resendOnWake) {
+            // Settings were changed while the mouse was off: deliver them now.
+            // (Re-sending unconditionally on every wake-up would write the
+            // on-board memory each time and make the cursor stutter briefly.)
+            m_resendOnWake = false;
             resendAll();
         }
     } else {
