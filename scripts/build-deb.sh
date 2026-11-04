@@ -54,17 +54,23 @@ if [[ -x "$BUILD_DIR/protocol_tests" ]]; then
     (cd "$BUILD_DIR" && QT_QPA_PLATFORM=offscreen ctest --output-on-failure)
 fi
 
+PKG_NAME="opengg"
+
 echo ">> Packaging (.deb)"
+# Drop packages left behind by earlier builds (including ones from the
+# project's former name) so only the freshly built package is picked up.
+rm -f "$BUILD_DIR"/*.deb
 (cd "$BUILD_DIR" && cpack -G DEB)
 
 mkdir -p "$DIST_DIR"
-cp -f "$BUILD_DIR"/*.deb "$DIST_DIR"/
+rm -f "$DIST_DIR"/"$PKG_NAME"_*.deb "$DIST_DIR"/steelseries-gg_*.deb
+cp -f "$BUILD_DIR"/"$PKG_NAME"_*.deb "$DIST_DIR"/
 echo
-echo "Package(s) written to $DIST_DIR:"
-ls -1 "$DIST_DIR"/*.deb
+echo "Package written to $DIST_DIR:"
+ls -1 "$DIST_DIR"/"$PKG_NAME"_*.deb
 
 if [[ $INSTALL_PKG -eq 1 ]]; then
-    DEB="$(ls -1t "$DIST_DIR"/*.deb | head -n1)"
+    DEB="$(ls -1t "$DIST_DIR"/"$PKG_NAME"_*.deb | head -n1)"
     echo ">> Installing $DEB"
     sudo apt-get install -y "$DEB"
 fi
