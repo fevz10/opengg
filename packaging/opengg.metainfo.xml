@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.fevz10.opengg</id>
+  <launchable type="desktop-id">opengg.desktop</launchable>
+  <name>OpenGG</name>
+  <summary>Unofficial SteelSeries GG alternative for the Apex 3 TKL and Rival 3 Wireless Gen 2</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <description>
+    <p>
+      OpenGG is a community made, unofficial desktop application that brings the
+      SteelSeries GG experience to Linux. It talks to the devices directly over HID.
+    </p>
+    <p>Supported devices:</p>
+    <ul>
+      <li>SteelSeries Apex 3 TKL - 8 zone illumination, effects, brightness</li>
+      <li>SteelSeries Rival 3 Wireless Gen 2 - CPI presets, polling rate, button mapping, battery level</li>
+    </ul>
+    <p>Not affiliated with or endorsed by SteelSeries.</p>
+  </description>
+  <categories>
+    <category>Utility</category>
+    <category>Settings</category>
+  </categories>
+  <provides>
+    <binary>opengg</binary>
+    <modalias>usb:v1038p1622d*</modalias>
+    <modalias>usb:v1038p1872d*</modalias>
+  </provides>
+  <content_rating type="oars-1.1"/>
+</component>

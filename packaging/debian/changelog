@@ -1,0 +1,12 @@
+opengg (1.0.0) unstable; urgency=medium
+
+  * Initial release of OpenGG.
+  * SteelSeries GG style Qt 6 interface (Home, Engine, Sonar, Moments,
+    Settings).
+  * Apex 3 TKL: 8-zone illumination, software effects, brightness sync,
+    idle dimming.
+  * Rival 3 Wireless Gen 2: CPI presets, polling rate, button remapping,
+    battery level.
+  * udev rules, system tray, autostart, Turkish translation.
+
+ -- fevz10 <fvzdrl@gmail.com>  Wed, 04 Nov 2026 15:30:00 +0300

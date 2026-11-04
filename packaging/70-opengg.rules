@@ -1,0 +1,18 @@
+# udev rules for OpenGG (unofficial SteelSeries GG alternative for Linux)
+#
+# Grants the active (seated) user access to the HID raw interfaces of the
+# supported SteelSeries devices so the application can run without root.
+#
+# Vendor 1038 = SteelSeries ApS
+#   1622 = Apex 3 TKL keyboard
+#   1872 = Rival 3 Wireless Gen 2 (2.4 GHz receiver)
+
+ACTION!="add|change", GOTO="steelseries_gg_end"
+
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1038", ATTRS{idProduct}=="1622", TAG+="uaccess", MODE="0660", GROUP="plugdev"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1038", ATTRS{idProduct}=="1872", TAG+="uaccess", MODE="0660", GROUP="plugdev"
+
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1038", ATTRS{idProduct}=="1622", TAG+="uaccess", MODE="0660", GROUP="plugdev"
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1038", ATTRS{idProduct}=="1872", TAG+="uaccess", MODE="0660", GROUP="plugdev"
+
+LABEL="steelseries_gg_end"

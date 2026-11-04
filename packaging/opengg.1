@@ -1,0 +1,42 @@
+.TH OPENGG 1 "November 2026" "opengg 1.0.0" "User Commands"
+.SH NAME
+opengg \- unofficial SteelSeries GG alternative for Linux
+.SH SYNOPSIS
+.B opengg
+[\fB\-\-demo\fR] [\fB\-\-minimized\fR] [\fB\-\-lang\fR \fICODE\fR] [\fB\-\-config\fR \fIFILE\fR] [\fB\-\-verbose\fR] [\fB\-\-screenshot\fR \fIDIR\fR]
+.SH DESCRIPTION
+Configures the SteelSeries Apex 3 TKL keyboard (8-zone illumination, effects,
+brightness) and the Rival 3 Wireless Gen 2 mouse (CPI presets, polling rate,
+button mapping, battery level) over HID, with an interface modelled after
+SteelSeries GG. The application keeps running in the system tray so that the
+keyboard, which has no on-board memory for custom lighting, keeps its colors.
+.SH OPTIONS
+.TP
+.B \-\-demo
+Simulate the supported devices; no hardware is accessed.
+.TP
+.B \-\-minimized
+Start hidden in the system tray.
+.TP
+.BI \-\-lang " CODE"
+Override the interface language (en, tr).
+.TP
+.BI \-\-config " FILE"
+Use an alternative configuration file instead of
+.IR ~/.config/opengg/config.json .
+.TP
+.B \-\-verbose
+Print the HID traffic to stderr.
+.TP
+.BI \-\-screenshot " DIR"
+Render every page to PNG files in DIR and exit (development aid).
+.SH FILES
+.TP
+.I ~/.config/opengg/config.json
+Application settings and device configs.
+.TP
+.I /usr/lib/udev/rules.d/70-opengg.rules
+udev rules granting device access to the logged in user.
+.SH NOTES
+This is an independent community project and is not affiliated with,
+endorsed by or supported by SteelSeries.

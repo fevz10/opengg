@@ -1,0 +1,24 @@
+# Build output
+build/
+build-*/
+dist/
+cmake-build-*/
+_CPack_Packages/
+*.deb
+*.qm
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
+install_manifest.txt
+
+# IDE / editor
+.vscode/
+.idea/
+*.user
+*.swp
+*~
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db

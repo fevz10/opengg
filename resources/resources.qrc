@@ -1,0 +1,55 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="/">
+    <file>icons/activity.svg</file>
+    <file>icons/alert-triangle.svg</file>
+    <file>icons/battery.svg</file>
+    <file>icons/bell.svg</file>
+    <file>icons/check-circle.svg</file>
+    <file>icons/check.svg</file>
+    <file>icons/chevron-down.svg</file>
+    <file>icons/chevron-left.svg</file>
+    <file>icons/chevron-right.svg</file>
+    <file>icons/chevron-up.svg</file>
+    <file>icons/copy.svg</file>
+    <file>icons/cpu.svg</file>
+    <file>icons/droplet.svg</file>
+    <file>icons/edit.svg</file>
+    <file>icons/external-link.svg</file>
+    <file>icons/film.svg</file>
+    <file>icons/globe.svg</file>
+    <file>icons/headphones.svg</file>
+    <file>icons/home.svg</file>
+    <file>icons/info.svg</file>
+    <file>icons/keyboard.svg</file>
+    <file>icons/minus.svg</file>
+    <file>icons/moon.svg</file>
+    <file>icons/more-vertical.svg</file>
+    <file>icons/mouse.svg</file>
+    <file>icons/plus.svg</file>
+    <file>icons/power.svg</file>
+    <file>icons/refresh.svg</file>
+    <file>icons/search.svg</file>
+    <file>icons/settings.svg</file>
+    <file>icons/shield.svg</file>
+    <file>icons/sliders.svg</file>
+    <file>icons/sun.svg</file>
+    <file>icons/sync.svg</file>
+    <file>icons/trash.svg</file>
+    <file>icons/usb.svg</file>
+    <file>icons/user.svg</file>
+    <file>icons/x.svg</file>
+    <file>icons/zap.svg</file>
+    <file>icons/static/check.svg</file>
+    <file>icons/static/chevron-down.svg</file>
+    <file>icons/static/chevron-right.svg</file>
+    <file>icons/static/radio-off.svg</file>
+    <file>icons/static/radio-on.svg</file>
+    <file>icons/static/radio-disabled.svg</file>
+    <file>icons/static/checkbox-off.svg</file>
+    <file>icons/static/checkbox-on.svg</file>
+    <file>icons/static/checkbox-disabled.svg</file>
+    <file alias="app/opengg.svg">../packaging/icons/opengg.svg</file>
+    <file alias="udev/70-opengg.rules">../packaging/70-opengg.rules</file>
+  </qresource>
+</RCC>

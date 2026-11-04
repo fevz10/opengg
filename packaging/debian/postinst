@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+# Reload udev rules so the SteelSeries devices become accessible without
+# replugging the system (devices already connected are re-triggered).
+if command -v udevadm >/dev/null 2>&1; then
+    udevadm control --reload-rules >/dev/null 2>&1 || true
+    udevadm trigger --subsystem-match=hidraw --action=add >/dev/null 2>&1 || true
+    udevadm trigger --subsystem-match=usb --attr-match=idVendor=1038 --action=add >/dev/null 2>&1 || true
+fi
+
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database -q /usr/share/applications || true
+fi
+
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor 2>/dev/null || true
+fi
+
+exit 0

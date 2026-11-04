@@ -1,0 +1,88 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake pkg-config dpkg-dev file lintian \
+            qt6-base-dev qt6-base-dev-tools qt6-l10n-tools qt6-tools-dev-tools \
+            libhidapi-dev libgl1-mesa-dev
+          # The Qt SVG development package is named differently across releases.
+          if apt-cache show qt6-svg-dev >/dev/null 2>&1; then
+            sudo apt-get install -y --no-install-recommends qt6-svg-dev
+          else
+            sudo apt-get install -y --no-install-recommends libqt6svg6-dev
+          fi
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSSGG_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build build --parallel "$(nproc)"
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+      - name: Smoke test (demo mode, offscreen)
+        run: |
+          mkdir -p shots
+          ./build/opengg --demo --screenshot shots --config "$RUNNER_TEMP/demo.json"
+          ls -l shots
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+      - name: Package (.deb)
+        run: |
+          cd build && cpack -G DEB
+          codename="$(. /etc/os-release && echo "$VERSION_CODENAME")"
+          for f in *.deb; do
+            mv "$f" "${f/_amd64.deb/+${codename}_amd64.deb}"
+          done
+          ls -l *.deb
+
+      - name: Lint package
+        run: lintian --tag-display-limit 0 build/*.deb || true
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ matrix.os }}
+          path: shots/*.png
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: opengg-${{ matrix.os }}
+          path: build/*.deb
+
+      - name: Attach package to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/*.deb
+          generate_release_notes: true

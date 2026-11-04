@@ -1,0 +1,23 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=OpenGG
+Name[tr]=OpenGG
+GenericName=Gaming Peripheral Configurator
+GenericName[tr]=Oyun Donanımı Yapılandırıcısı
+Comment=Unofficial SteelSeries GG alternative: configure the Apex 3 TKL and Rival 3 Wireless Gen 2
+Comment[tr]=Resmi olmayan SteelSeries GG alternatifi: Apex 3 TKL ve Rival 3 Wireless Gen 2 cihazlarını yapılandırın
+Exec=opengg %U
+TryExec=opengg
+Icon=opengg
+Terminal=false
+Categories=Utility;Settings;HardwareSettings;Qt;
+Keywords=OpenGG;SteelSeries;GG;Engine;keyboard;mouse;RGB;CPI;DPI;klavye;fare;
+StartupNotify=true
+StartupWMClass=opengg
+Actions=Minimized;
+
+[Desktop Action Minimized]
+Name=Start minimized to tray
+Name[tr]=Tepsiye küçültülmüş başlat
+Exec=opengg --minimized
