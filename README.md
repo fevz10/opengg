@@ -54,12 +54,21 @@ Hardware reports — especially for the Gen 2 mouse — are very welcome; the
 
 ### From the release package
 
-Download the `.deb` for your Ubuntu / Debian release from the
+Download the `.deb` for your Ubuntu release from the
 [Releases](https://github.com/fevz10/opengg/releases) page and install it:
 
 ```bash
 sudo apt install ./opengg_*.deb
 ```
+
+| Package | Ubuntu release | Qt |
+|---|---|---|
+| `opengg_<version>+jammy_amd64.deb` | 22.04 LTS | 6.2 |
+| `opengg_<version>+noble_amd64.deb` | 24.04 LTS | 6.4 |
+| `opengg_<version>+resolute_amd64.deb` | 26.04 LTS | 6.8 |
+
+Other Debian based distributions work too; build from source (below) so the
+package matches your Qt version.
 
 The package installs the application, the desktop entry, the icon and the
 **udev rules** (`/usr/lib/udev/rules.d/70-opengg.rules`) that let your user
@@ -203,8 +212,9 @@ Gen 2** (CPI ön ayarları, yoklama hızı, düğme atamaları, pil) cihazların
 doğrudan HID üzerinden yapılandırır; SteelSeries hesabı veya servisi gerekmez.
 
 **Kurulum:** [Releases](https://github.com/fevz10/opengg/releases) sayfasından
-sürümünüze uygun `.deb` dosyasını indirip `sudo apt install ./opengg_*.deb`
-komutuyla kurun. Paket, cihaz erişimi için gereken udev kurallarını da kurar.
+Ubuntu sürümünüze uygun `.deb` dosyasını (22.04 *jammy*, 24.04 *noble*,
+26.04 *resolute*) indirip `sudo apt install ./opengg_*.deb` komutuyla kurun.
+Paket, cihaz erişimi için gereken udev kurallarını da kurar.
 
 **Kaynaktan derleme:** `./scripts/build-deb.sh --deps` (bağımlılıkları kurar),
 ardından `./scripts/build-deb.sh --install` (derler, testleri çalıştırır,
