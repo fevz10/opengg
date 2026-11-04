@@ -1,8 +1,9 @@
 <div align="center">
 
-<img src="packaging/icons/opengg.svg" width="96" alt="">
-
-# OpenGG
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo-dark.svg">
+  <img src="docs/logo.svg" width="360" alt="OpenGG">
+</picture>
 
 **An open-source, unofficial alternative to SteelSeries GG for Linux —
 configure your Apex 3 TKL keyboard and Rival 3 Wireless Gen 2 mouse with a familiar GG-style interface.**

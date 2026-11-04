@@ -1,5 +1,6 @@
 #include "ui/widgets/TopBar.h"
 
+#include "core/Icons.h"
 #include "core/Theme.h"
 #include "ui/widgets/IconButton.h"
 #include "ui/widgets/NavTab.h"
@@ -13,14 +14,15 @@
 
 namespace {
 
-/// The small logo mark at the left of the bar (original design).
+/// The logo at the left of the bar: the OpenGG mark (the application icon
+/// SVG) followed by the two-tone "OpenGG" word mark.
 class LogoMark : public QWidget
 {
 public:
     explicit LogoMark(QWidget *parent = nullptr)
         : QWidget(parent)
     {
-        setFixedSize(176, 56);
+        setFixedSize(184, 56);
     }
 
 protected:
@@ -28,29 +30,30 @@ protected:
     {
         QPainter p(this);
         p.setRenderHint(QPainter::Antialiasing);
-        // Mark: orange "G" monogram in a dark rounded square.
-        const QRectF box(0, 14, 28, 28);
-        p.setPen(Qt::NoPen);
-        p.setBrush(Theme::Bg3);
-        p.drawRoundedRect(box, 7, 7);
-        QPen pen(Theme::Accent, 4.2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        p.setPen(pen);
-        p.setBrush(Qt::NoBrush);
-        const QRectF arcRect = box.adjusted(6.5, 6.5, -6.5, -6.5);
-        // Open ring (G body) from -40 deg going around to 0 deg.
-        p.drawArc(arcRect, 40 * 16, 280 * 16);
-        const QPointF c = arcRect.center();
-        p.drawLine(QPointF(c.x() + arcRect.width() / 2, c.y()), QPointF(c.x() + 1, c.y()));
+        p.setRenderHint(QPainter::SmoothPixmapTransform);
 
-        // Word mark
+        // Mark
+        constexpr int markSize = 30;
+        const QPixmap mark = Icons::appIcon(markSize, devicePixelRatioF());
+        p.drawPixmap(QPointF(0, (height() - markSize) / 2.0), mark);
+
+        // Word mark: "Open" in the text color, "GG" in the accent color.
         const QFont wordFont = Theme::font(15, QFont::Bold);
-        const int wordW = QFontMetrics(wordFont).horizontalAdvance(QStringLiteral("OpenGG"));
-        p.setPen(Theme::Text);
+        const QFontMetrics fm(wordFont);
+        const QString open = QStringLiteral("Open");
+        const QString gg = QStringLiteral("GG");
+        const int openW = fm.horizontalAdvance(open);
+        const int ggW = fm.horizontalAdvance(gg);
+        const qreal x = markSize + 9;
         p.setFont(wordFont);
-        p.drawText(QRectF(36, 0, wordW + 4, height()), Qt::AlignVCenter | Qt::AlignLeft, QStringLiteral("OpenGG"));
+        p.setPen(Theme::Text);
+        p.drawText(QRectF(x, 0, openW + 2, height()), Qt::AlignVCenter | Qt::AlignLeft, open);
+        p.setPen(Theme::Accent);
+        p.drawText(QRectF(x + openW, 0, ggW + 2, height()), Qt::AlignVCenter | Qt::AlignLeft, gg);
+
         p.setPen(Theme::TextMuted);
         p.setFont(Theme::font(10, QFont::DemiBold));
-        p.drawText(QRectF(36 + wordW + 7, 1, 80, height()), Qt::AlignVCenter | Qt::AlignLeft, QStringLiteral("for Linux"));
+        p.drawText(QRectF(x + openW + ggW + 7, 1, 80, height()), Qt::AlignVCenter | Qt::AlignLeft, QStringLiteral("for Linux"));
     }
 };
 

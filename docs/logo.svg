@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 128" width="420" height="128">
+  <!-- circular arrow -->
+  <path d="M 38.03 22.45 A 49.00 49.00 0 1 1 19.96 42.52" fill="none" stroke="#FF5200" stroke-width="14"/>
+  <path d="M 7.17 37.95 L 31.14 19.60 L 31.44 49.79 Z" fill="#FF5200" stroke="#FF5200" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- penguin -->
+  <path d="M 35 61 C 35 45 48 34 64 34 C 80 34 93 45 93 61 C 93 77 84 92 64 94 C 44 92 35 77 35 61 Z" fill="#24262B"/>
+  <path d="M 43 67 C 43 57 49 52 56 56 C 59 51 69 51 72 56 C 79 52 85 57 85 67 C 85 80 76 90 64 90 C 52 90 43 80 43 67 Z" fill="#FFFFFF"/>
+  <ellipse cx="56.5" cy="65.5" rx="4" ry="5" fill="#24262B"/>
+  <ellipse cx="71.5" cy="65.5" rx="4" ry="5" fill="#24262B"/>
+  <circle cx="58" cy="63.5" r="1.2" fill="#FFFFFF"/>
+  <circle cx="73" cy="63.5" r="1.2" fill="#FFFFFF"/>
+  <path d="M 55 75 C 59.5 72.5 68.5 72.5 73 75 C 71.5 81 67.8 84.5 64 84.5 C 60.2 84.5 56.5 81 55 75 Z" fill="#FF5200"/>
+  <path d="M 58 78.5 C 61.5 80.4 66.5 80.4 70 78.5" fill="none" stroke="#24262B" stroke-width="1.7" stroke-linecap="round"/>
+  <text x="140" y="86" font-family="Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="64" font-weight="800" letter-spacing="-1"><tspan fill="#24262B">Open</tspan><tspan fill="#FF5200">GG</tspan></text>
+</svg>

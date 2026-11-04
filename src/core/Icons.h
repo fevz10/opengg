@@ -23,8 +23,10 @@ QIcon icon(const QString &name, const QColor &color, int size = 20);
 /// Returns true when an icon with that name exists in the resources.
 bool exists(const QString &name);
 
-/// The application icon rendered at `size` pixels (multi colored, not recolored).
-QPixmap appIcon(int size);
+/// The application icon (the OpenGG mark) rendered at `size` logical pixels
+/// (multi colored, not recolored). A `devicePixelRatio` of 0 uses the
+/// primary screen's ratio.
+QPixmap appIcon(int size, qreal devicePixelRatio = 1.0);
 QIcon appIconSet();
 
 } // namespace Icons

@@ -46,4 +46,5 @@ private:
     bool m_idle = false;
     bool m_supported = false;
     bool m_probed = false;
+    int m_backend = 0; ///< 0 = unknown/none, 1 = Mutter, 2 = freedesktop ScreenSaver
 };

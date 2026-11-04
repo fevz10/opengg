@@ -2,8 +2,7 @@
 
 #if defined(SSGG_HAVE_DBUS)
 #include <QDBusConnection>
-#include <QDBusInterface>
-#include <QDBusReply>
+#include <QDBusMessage>
 #endif
 
 IdleMonitor::IdleMonitor(QObject *parent)
@@ -36,27 +35,40 @@ qint64 IdleMonitor::queryIdleMs()
     if (!bus.isConnected())
         return -1;
 
-    // GNOME / Mutter
-    {
-        QDBusInterface mutter(QStringLiteral("org.gnome.Mutter.IdleMonitor"),
-                              QStringLiteral("/org/gnome/Mutter/IdleMonitor/Core"),
-                              QStringLiteral("org.gnome.Mutter.IdleMonitor"), bus);
-        if (mutter.isValid()) {
-            QDBusReply<qulonglong> reply = mutter.call(QStringLiteral("GetIdletime"));
-            if (reply.isValid())
-                return qint64(reply.value());
+    // Plain method calls (no introspection, short timeout) so that polling is
+    // cheap enough to run every few seconds on the GUI thread.
+    auto call = [&bus](const char *service, const char *path, const char *iface, const char *method, bool seconds) -> qint64 {
+        QDBusMessage msg = QDBusMessage::createMethodCall(QString::fromLatin1(service), QString::fromLatin1(path),
+                                                          QString::fromLatin1(iface), QString::fromLatin1(method));
+        const QDBusMessage reply = bus.call(msg, QDBus::Block, 300);
+        if (reply.type() != QDBusMessage::ReplyMessage || reply.arguments().isEmpty())
+            return -1;
+        bool ok = false;
+        const qint64 v = reply.arguments().first().toLongLong(&ok);
+        if (!ok || v < 0)
+            return -1;
+        return seconds ? v * 1000 : v;
+    };
+
+    // GNOME / Mutter (milliseconds)
+    if (m_backend == 0 || m_backend == 1) {
+        const qint64 v = call("org.gnome.Mutter.IdleMonitor", "/org/gnome/Mutter/IdleMonitor/Core",
+                              "org.gnome.Mutter.IdleMonitor", "GetIdletime", false);
+        if (v >= 0) {
+            m_backend = 1;
+            return v;
         }
     }
     // KDE and other freedesktop screensaver implementations (seconds)
-    {
-        QDBusInterface ss(QStringLiteral("org.freedesktop.ScreenSaver"), QStringLiteral("/ScreenSaver"),
-                          QStringLiteral("org.freedesktop.ScreenSaver"), bus);
-        if (ss.isValid()) {
-            QDBusReply<uint> reply = ss.call(QStringLiteral("GetSessionIdleTime"));
-            if (reply.isValid())
-                return qint64(reply.value()) * 1000;
+    if (m_backend == 0 || m_backend == 2) {
+        const qint64 v = call("org.freedesktop.ScreenSaver", "/ScreenSaver", "org.freedesktop.ScreenSaver",
+                              "GetSessionIdleTime", true);
+        if (v >= 0) {
+            m_backend = 2;
+            return v;
         }
     }
+    m_backend = 0;
 #endif
     return -1;
 }

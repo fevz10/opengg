@@ -77,21 +77,31 @@ QIcon icon(const QString &name, const QColor &color, int size)
     return ic;
 }
 
-QPixmap appIcon(int size)
+QPixmap appIcon(int size, qreal devicePixelRatio)
 {
-    static QHash<int, QPixmap> cache;
-    auto it = cache.find(size);
+    if (devicePixelRatio <= 0.0) {
+        devicePixelRatio = 1.0;
+        if (const QScreen *screen = QGuiApplication::primaryScreen())
+            devicePixelRatio = screen->devicePixelRatio();
+    }
+
+    const QString key = QStringLiteral("%1|%2").arg(size).arg(devicePixelRatio);
+    static QHash<QString, QPixmap> cache;
+    auto it = cache.find(key);
     if (it != cache.end())
         return it.value();
-    QPixmap pm(size, size);
+
+    QPixmap pm(int(size * devicePixelRatio), int(size * devicePixelRatio));
     pm.fill(Qt::transparent);
     QSvgRenderer renderer(QStringLiteral(":/app/opengg.svg"));
     if (renderer.isValid()) {
         QPainter p(&pm);
-        p.setRenderHint(QPainter::Antialiasing);
-        renderer.render(&p, QRectF(0, 0, size, size));
+        p.setRenderHint(QPainter::Antialiasing, true);
+        p.setRenderHint(QPainter::SmoothPixmapTransform, true);
+        renderer.render(&p, QRectF(0, 0, pm.width(), pm.height()));
     }
-    cache.insert(size, pm);
+    pm.setDevicePixelRatio(devicePixelRatio);
+    cache.insert(key, pm);
     return pm;
 }
 
